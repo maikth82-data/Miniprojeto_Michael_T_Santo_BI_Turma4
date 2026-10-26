@@ -59,7 +59,7 @@ Foi desenvolvido uma série de códigos para garantir a limpeza e a integridade 
 import pandas as pd
 import datetime as dt
 
-#carregando arquivos 
+# carregando arquivos 
 
 df = pd.read_csv('/Users/michaelthomazoniespiritosanto/Desktop/SCTEC/mini_projeto_vendas/Base Varejo.csv', sep=';', encoding='utf-8', low_memory=False)
 print(f" -> Linhas iniciais: {df.shape[0]:,}")
@@ -68,17 +68,17 @@ print(df.head())
 print(df.dtypes)
 print(df.info())
 
-# 1. Criando uma copia de segurança do dataframe
+1. Criando uma copia de segurança do dataframe
 print("\n Criando cópia de segurança (df_copia) \n")
 df_copia = df.copy()
 print("Cópia de segurança criada com sucesso!")
 
-# 2. Convertendo o campo data para o formato datetime 
+2. Convertendo o campo data para o formato datetime 
 df_copia['DATA'] = pd.to_datetime(df_copia['DATA'], format='%y/%m/%d', errors='coerce')
 print('Datas convertidas para o tipo datetime.')
 print(df_copia.dtypes)
 
-# 3. Removendo colunas vazias desnecessárias (Unnamed)
+3. Removendo colunas vazias desnecessárias (Unnamed)
 
 print("\n Removendo colunas vazias desnecessárias \n")
 colunas_antes = df_copia.shape[1]
@@ -87,7 +87,7 @@ colunas_depois = df_copia.shape[1]
 print(f" -> Colunas antes: {colunas_antes} | Colunas depois: {colunas_depois}")
 print(df_copia.head())
 
-# 4. Tratamento de valores '#N/D' na categoria de produtos
+4.Tratamento de valores '#N/D' na categoria de produtos
 
 print("\n Tentativa para tratar produtos sem identificação (#N/D)\n")
 df_validos = df_copia[df_copia['PR_CAT'] != '#N/D'].drop_duplicates(subset=['PR_ID'])
@@ -101,13 +101,15 @@ df_copia.loc[mask_nd, 'PR_NOME'] = df_copia.loc[mask_nd, 'PR_ID'].map(map_nome)
 recuperados = df_copia.loc[mask_nd, 'PR_CAT'].notna().sum()
 print(f"Tentativa de preenchimento cruzado via PR_ID concluída ({recuperados} registros recuperados).")
 
-# Como não teve possibilidade alterando #N/D por SEM_IDENTIFICACAO
+Como não teve possibilidade alterando #N/D por SEM_IDENTIFICACAO
+
 print("\n Preenchendo valaores #N/D convertidos para NaN por SEM_IDENTIFICACAO\n")
 df_copia['PR_CAT'] = df_copia['PR_CAT'].fillna('SEM_IDENTIFICACAO')
 df_copia['PR_NOME'] = df_copia['PR_NOME'].fillna('SEM_IDENTIFICACAO')
 print("Valores que preenchidos com sucesso.")
 
-# 5. Remoção de linhas duplicadas exatas
+5. Remoção de linhas duplicadas exatas
+
 print("\n Removendo linhas duplicadas exatas \n")
 linhas_antes_dup = len(df_copia)
 duplicadas_qtd = df_copia.duplicated().sum()
@@ -118,11 +120,12 @@ linhas_depois_dup = len(df_copia)
 print(f" Linhas antes da remoção: {linhas_antes_dup:,}")
 print(f" Linhas após a remoção de duplicatas: {linhas_depois_dup:,}")
 
-# 6. Salvando a base tratada num novo arquivo CSV
+6. Salvando a base tratada num novo arquivo CSV
 
 print("\n Salvando base de dados já tratada\n")
 df_copia.to_csv('/Users/michaelthomazoniespiritosanto/Desktop/SCTEC/mini_projeto_vendas/base_varejo_limpa.csv', sep=';', index=False, encoding='utf-8')
 print(f" Arquivo salvo com sucesso! Dimensão final: {df_copia.shape[0]:,} linhas e {df_copia.shape[1]} colunas.")
+
 ---
 
 ## 2. Relatório de Insights após análise de indicadores
