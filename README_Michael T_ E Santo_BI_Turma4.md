@@ -4,7 +4,7 @@ Este projeto tem como objetivo realizar uma Analise de Dados de desempenho de ve
 
 **Como rodar o script para visualizar os indicadores usados no projeto**
 
-Após clonar o repositório do Github <[git clone (https://github.com/maikth82-data/Miniprojeto_Michael_T_Santo_BI_Turma4.git]> siga os seguintes passos:
+Após clonar o repositório do Github <git clone (https://github.com/maikth82-data/Miniprojeto_Michael_T_Santo_BI_Turma4.git> siga os seguintes passos:
 
 1. Abra o seu VScode ou programa da sua preferência, e abra a pasta onde está o arquivo **mini_projeto_Michael_T_E_Santo.py**
 2. Se colocou o  arquivo **base_varejo_limpa.csv** na mesma pasta que o script, basta rodar o script para ver o resultado dos insights. 
@@ -39,27 +39,24 @@ Durante a análise inicial dos dados, foram detectados os seguintes problemas es
 
 ## Processo de Tratamento (Python)
 
-Foi desenvolvido uma série de códigos para garantir a limpeza e a integridade dos dados originais através de uma cópia de segurança (`df_copia`). A partir disso foram realizadas as seguintes etapas:
+Foi desenvolvido uma série de códigos para garantir a limpeza de acordo com as etapadas abaixo:
 
 1. **Carregamento:** Importação do ficheiro CSV delimitado por ponto e vírgula.  
-2. **Backup em Memória:** Criação da cópia de segurança (`df_copia = df.copy()`).  
+2. **Cópia em Memória:** Criação da cópia de segurança (`df_copia = df.copy()`).  
 3. **Limpeza:** Remoção de colunas vazias desnecessárias (`Unnamed`) para garantir que não haja erros na futuras análise e não comprometa o desempenho do dataframe com informações desnecessárias.  
 4. **Tratamento de inconsistências:**  Tentativa de mapeamento e substituição de valores `#N/D` nas colunas categoria e nome produto com base no ID do produto (`PR_ID`), para resolver os casos de falta de informação para que fosse possível realizar análises com melhor desempenho sem dados faltantes.  
-5. **Substituição dos valores `#N/D` por `SEM_INFORMACAO`:** Como através da substituição não houve a possibilidade de completar os dados faltantes nas categorias, eles foram substituídos por SEM_INFORMACAO
+**Substituição dos valores `#N/D` por `SEM_INFORMACAO`:** Como através da substituição não houve a possibilidade de completar os dados faltantes nas categorias, eles foram substituídos por SEM_INFORMACAO
 6. **Remoção de duplicados:** Remoção de linhas duplicadas exatas, reduzindo a base de 830.000 para 733.447 linhas limpas. Isto foi essencial para que nãp haja resultados errados nas análises de vendas e estatisticas básicas.  
 7. **Padronização Temporal:** Conversão da coluna de data para o formato datetime do Pandas. Necessário para geração de análises temporais  
 8. **Exportação:** Geração da base tratada e pronta para análise em `base_varejo_limpa.csv`.
 
 ---
 
-## Codígos utilizados para limpeza dos dados
+## Códigos utilizados para limpeza dos dados
 
-#importando bibliotecas 
-
+ 
 import pandas as pd
 import datetime as dt
-
-# carregando arquivos 
 
 df = pd.read_csv('/Users/michaelthomazoniespiritosanto/Desktop/SCTEC/mini_projeto_vendas/Base Varejo.csv', sep=';', encoding='utf-8', low_memory=False)
 print(f" -> Linhas iniciais: {df.shape[0]:,}")
@@ -68,17 +65,13 @@ print(df.head())
 print(df.dtypes)
 print(df.info())
 
-1. Criando uma copia de segurança do dataframe
 print("\n Criando cópia de segurança (df_copia) \n")
 df_copia = df.copy()
 print("Cópia de segurança criada com sucesso!")
 
-2. Convertendo o campo data para o formato datetime 
 df_copia['DATA'] = pd.to_datetime(df_copia['DATA'], format='%y/%m/%d', errors='coerce')
 print('Datas convertidas para o tipo datetime.')
 print(df_copia.dtypes)
-
-3. Removendo colunas vazias desnecessárias (Unnamed)
 
 print("\n Removendo colunas vazias desnecessárias \n")
 colunas_antes = df_copia.shape[1]
@@ -86,8 +79,6 @@ df_copia = df_copia.loc[:, ~df_copia.columns.str.contains('^Unnamed')]
 colunas_depois = df_copia.shape[1]
 print(f" -> Colunas antes: {colunas_antes} | Colunas depois: {colunas_depois}")
 print(df_copia.head())
-
-4.Tratamento de valores '#N/D' na categoria de produtos
 
 print("\n Tentativa para tratar produtos sem identificação (#N/D)\n")
 df_validos = df_copia[df_copia['PR_CAT'] != '#N/D'].drop_duplicates(subset=['PR_ID'])
@@ -101,14 +92,10 @@ df_copia.loc[mask_nd, 'PR_NOME'] = df_copia.loc[mask_nd, 'PR_ID'].map(map_nome)
 recuperados = df_copia.loc[mask_nd, 'PR_CAT'].notna().sum()
 print(f"Tentativa de preenchimento cruzado via PR_ID concluída ({recuperados} registros recuperados).")
 
-Como não teve possibilidade alterando #N/D por SEM_IDENTIFICACAO
-
 print("\n Preenchendo valaores #N/D convertidos para NaN por SEM_IDENTIFICACAO\n")
 df_copia['PR_CAT'] = df_copia['PR_CAT'].fillna('SEM_IDENTIFICACAO')
 df_copia['PR_NOME'] = df_copia['PR_NOME'].fillna('SEM_IDENTIFICACAO')
 print("Valores que preenchidos com sucesso.")
-
-5. Remoção de linhas duplicadas exatas
 
 print("\n Removendo linhas duplicadas exatas \n")
 linhas_antes_dup = len(df_copia)
@@ -119,8 +106,6 @@ df_copia = df_copia.drop_duplicates()
 linhas_depois_dup = len(df_copia)
 print(f" Linhas antes da remoção: {linhas_antes_dup:,}")
 print(f" Linhas após a remoção de duplicatas: {linhas_depois_dup:,}")
-
-6. Salvando a base tratada num novo arquivo CSV
 
 print("\n Salvando base de dados já tratada\n")
 df_copia.to_csv('/Users/michaelthomazoniespiritosanto/Desktop/SCTEC/mini_projeto_vendas/base_varejo_limpa.csv', sep=';', index=False, encoding='utf-8')
