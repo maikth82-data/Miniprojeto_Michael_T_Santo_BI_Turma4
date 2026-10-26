@@ -4,7 +4,7 @@ Este projeto tem como objetivo realizar uma Analise de Dados de desempenho de ve
 
 **Como rodar o script para visualizar os indicadores usados no projeto**
 
-Após clonar o repositório do Github <git clone url do repositório > siga os seguintes passos:
+Após clonar o repositório do Github <[git clone (https://github.com/maikth82-data/Miniprojeto_Michael_T_Santo_BI_Turma4.git]> siga os seguintes passos:
 
 1. Abra o seu VScode ou programa da sua preferência, e abra a pasta onde está o arquivo **mini_projeto_Michael_T_E_Santo.py**
 2. Se colocou o  arquivo **base_varejo_limpa.csv** na mesma pasta que o script, basta rodar o script para ver o resultado dos insights. 
